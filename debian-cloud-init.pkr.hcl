@@ -31,11 +31,15 @@ variable "username" {
 build {
   sources = ["source.qemu.debian"]
 
-  provisioner "ansible" {
-    playbook_file           = "ansible/playbook.yml"
-    ansible_ssh_extra_args  = ["-o IdentitiesOnly=yes"]
-    extra_arguments = [ "--scp-extra-args", "'-O'" ]
-    keep_inventory_file     = true
+  provisioner "shell" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get install -y ansible"
+    ]
+  }
+
+  provisioner "ansible-local" {
+    playbook_file = "ansible/local-playbook.yml"
   }
 
   post-processor "manifest" {

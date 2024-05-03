@@ -60,18 +60,21 @@ EOF
     ]
   }
 
-  provisioner "ansible" {
-    playbook_file           = "ansible/playbook.yml"
-    ansible_ssh_extra_args  = ["-o IdentitiesOnly=yes"]
-    user = "${var.username}"
-    keep_inventory_file     = true
+  provisioner "shell" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get install -y ansible"
+    ]
+  }
+
+  provisioner "ansible-local" {
+    playbook_file = "ansible/local-playbook.yml"
   }
 
   post-processor "manifest" {
     keep_input_artifact = true
   }
 }
-
 
 source qemu "debian" {
   iso_url      = "${var.source_iso}"
